@@ -39,6 +39,13 @@ def test_release_workflows_default_to_single_cp310_and_drop_pybind11():
     assert 'name = "pybind11"' not in uv_lock
 
 
+def test_linux_abi3_verify_job_uses_targeted_loader_script():
+    build_workflow = _read_text(".github/workflows/_build.yml")
+
+    assert "python -m pip install --no-deps dist/*.whl" in build_workflow
+    assert "python .github/scripts/verify_linux_abi3_wheel.py" in build_workflow
+
+
 def test_repo_no_longer_contains_pybind11_engine_bindings():
     assert not (REPO_ROOT / "src" / "pybind11_interface.cpp").exists()
     assert not (REPO_ROOT / "src" / "cpu_feature_probe.cpp").exists()

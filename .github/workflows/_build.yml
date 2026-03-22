@@ -457,26 +457,7 @@ jobs:
     - name: Smoke test abi3 extension loading
       shell: bash
       run: |
-        python - <<'PY'
-        import importlib
-        import importlib.util
-
-        import openviking.storage.vectordb.engine as engine
-
-        native_spec = importlib.util.find_spec("openviking.storage.vectordb.engine._native")
-        if native_spec is None or native_spec.origin is None:
-            raise SystemExit("openviking storage native backend extension was not installed")
-
-        native_module = importlib.import_module("openviking.storage.vectordb.engine._native")
-        if engine.ENGINE_VARIANT != "native":
-            raise SystemExit(
-                f"expected native engine variant on Linux abi3 wheel, got {engine.ENGINE_VARIANT}"
-            )
-
-        print(f"Loaded runtime engine variant {engine.ENGINE_VARIANT}")
-        print(f"Loaded native extension from {native_spec.origin}")
-        print(f"Imported backend module {native_module.__name__}")
-        PY
+        python .github/scripts/verify_linux_abi3_wheel.py
 
   verify-macos-14-wheel-on-macos-15:
     name: Verify macOS 14 arm64 wheel installs on macOS 15
